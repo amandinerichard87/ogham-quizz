@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Réviser les Oghams</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="shell">
+<header><div class="sigil">᚛ᚑᚌᚐᚋ᚜</div><h1>Réviser les Oghams</h1><p>25 fiches · quiz généré à partir de tes fiches finales</p></header>
+<main>
+<section id="home" class="panel active">
+  <h2>Choisis ton mode</h2>
+  <div class="modes">
+    <button onclick="startQuiz('normal')"><b>Quiz</b><span>15 questions variées avec correction immédiate</span></button>
+    <button onclick="startQuiz('hard')"><b>Mode difficile</b><span>Oghams proches et distracteurs plus subtils</span></button>
+    <button onclick="showCards()"><b>Révision</b><span>Parcours les 25 fiches essentielles</span></button>
+    <button id="errorsBtn" onclick="startErrors()"><b>Mes erreurs</b><span>Retravaille les oghams ratés</span></button>
+  </div>
+  <div class="stats" id="stats"></div>
+</section>
+<section id="quiz" class="panel">
+  <div class="topline"><button class="ghost" onclick="goHome()">← Accueil</button><span id="progress"></span></div>
+  <div class="bar"><i id="bar"></i></div>
+  <div class="qtype" id="qtype"></div><h2 id="question"></h2>
+  <div id="answers" class="answers"></div>
+  <div id="feedback" class="feedback"></div>
+  <button id="next" class="next" onclick="nextQuestion()">Question suivante →</button>
+</section>
+<section id="result" class="panel"><h2>Résultat</h2><div class="score" id="score"></div><div id="resultText"></div><div class="actions"><button onclick="startQuiz('normal')">Recommencer</button><button class="ghost" onclick="goHome()">Accueil</button></div></section>
+<section id="cards" class="panel">
+ <div class="topline"><button class="ghost" onclick="goHome()">← Accueil</button><span>Révision</span></div>
+ <input id="search" placeholder="Rechercher un ogham, un arbre, un thème…" oninput="renderCards(this.value)">
+ <div id="cardgrid" class="cardgrid"></div>
+</section>
+</main></div>
+<script src="data.js"></script><script src="app.js"></script>
+</body></html>
