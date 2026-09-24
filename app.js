@@ -3,10 +3,18 @@ let state={questions:[],i:0,score:0,wrong:[],mode:'normal'};
 const $=id=>document.getElementById(id);
 function panels(id){document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');scrollTo(0,0)}
 function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
-function namesExcept(name, hard=false){let pool=OGHAMS.map(x=>x.name).filter(x=>x!==name);if(hard&&CLOSE[name]) pool=[...CLOSE[name],...pool.filter(x=>!CLOSE[name].includes(x))];return pool}
+function namesExcept(name, hard=false){
+ let pool=OGHAMS.map(x=>x.name).filter(x=>x!==name);
+ if(hard&&CLOSE[name]){
+   const close=shuffle(CLOSE[name].filter(n=>n!==name));
+   const rest=shuffle(pool.filter(x=>!close.includes(x)));
+   return [...close,...rest];
+ }
+ return shuffle(pool);
+}
 function choices(correct, field, hard){
  let r=OGHAMS.find(x=>x.name===correct), vals=[r[field]];
- let preferred=hard&&CLOSE[correct]?CLOSE[correct].map(n=>OGHAMS.find(x=>x.name===n)?.[field]).filter(Boolean):[];
+ let preferred=hard&&CLOSE[correct]?shuffle(CLOSE[correct]).map(n=>OGHAMS.find(x=>x.name===n)?.[field]).filter(Boolean):[];
  for(let v of [...preferred,...shuffle(OGHAMS.map(x=>x[field]))]) if(v&& !vals.includes(v)) vals.push(v); 
  return shuffle(vals.slice(0,4));
 }
@@ -30,9 +38,23 @@ function renderQ(){
  $('qtype').textContent=q.type;if(q.html){$('question').innerHTML=q.q}else{$('question').textContent=q.q};$('feedback').className='feedback';$('feedback').innerHTML='';$('next').className='next';
  $('answers').innerHTML='';q.opts.forEach(v=>{let b=document.createElement('button');b.textContent=v;b.onclick=()=>answer(v,b);$('answers').appendChild(b)})
 }
+function cleanRevisionText(o){
+ let text=(o.synthesis||o.interpretation||'').trim();
+ // Les anciennes synthèses contenaient à la fin un récapitulatif cumulatif des Oghams précédents.
+ // On le retire du corrigé pour rester concentré sur l'Ogham de la question.
+ text=text.split(/###\s+(?:Les|La progression)/i)[0].trim();
+ text=text.replace(/###\s*/g,'').replace(/\s+/g,' ').trim();
+ return text;
+}
 function answer(v,b){
  let q=state.questions[state.i],ok=v===q.a;document.querySelectorAll('#answers button').forEach(x=>{x.disabled=true;if(x.textContent===q.a)x.classList.add('correct')});if(!ok){b.classList.add('wrong');state.wrong.push(q.o.name)}else state.score++;
- $('feedback').innerHTML=`<b>${ok?'Bonne réponse.':'Réponse : '+q.a}</b><br><img class="feedback-symbol" src="${q.o.image}" alt="${q.o.name}"> <b>${q.o.name}</b> — ${q.o.tree}. Thème : <b>${q.o.theme}</b>.<br><span>${q.o.synthesis||q.o.interpretation.slice(0,260)}</span>`;
+ const detail=cleanRevisionText(q.o);
+ $('feedback').innerHTML=`
+   <div class="feedback-status">${ok?'✓ Bonne réponse':'Réponse : '+q.a}</div>
+   <div class="feedback-head"><img class="feedback-symbol" src="${q.o.image}" alt="${q.o.name}"><div><b>${q.o.name}</b><span>${q.o.tree} · ${q.o.sound}</span></div></div>
+   <div class="feedback-theme"><span>Thème central</span><b>${q.o.theme}</b></div>
+   ${detail?`<div class="feedback-detail">${detail}</div>`:''}
+   <div class="feedback-keywords"><b>À retenir :</b> ${q.o.keywords}</div>`;
  $('feedback').classList.add('show');$('next').classList.add('show')
 }
 function nextQuestion(){state.i++;if(state.i>=state.questions.length)return finish();renderQ()}

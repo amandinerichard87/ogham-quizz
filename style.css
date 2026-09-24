@@ -16,3 +16,5 @@ button{font:inherit;border:1px solid var(--line);background:var(--paper);color:v
 .question-symbol{display:block;width:min(180px,48vw);height:210px;object-fit:contain;margin:8px auto 22px}
 #question span{display:block;text-align:center}
 .feedback-symbol{width:34px;height:48px;object-fit:contain;vertical-align:middle;margin-right:8px}
+
+.feedback-status{font-weight:700;margin-bottom:14px}.feedback-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}.feedback-head div{display:flex;flex-direction:column}.feedback-head span{font-size:.88rem;opacity:.72}.feedback-theme{display:flex;gap:8px;align-items:baseline;margin:10px 0}.feedback-theme span{text-transform:uppercase;letter-spacing:.08em;font-size:.72rem;opacity:.65}.feedback-detail{margin-top:12px;line-height:1.65}.feedback-keywords{margin-top:14px;padding-top:12px;border-top:1px solid rgba(0,0,0,.12);font-size:.92rem}.feedback-detail .ogham-sequence{display:none}
